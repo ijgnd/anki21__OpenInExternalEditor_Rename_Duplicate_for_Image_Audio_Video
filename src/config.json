@@ -1,0 +1,18 @@
+{
+    "backup_on_rename":true,
+    "image_duplicate__show_in_editor_context_menu": true,
+    "image_edit_externally__program":"mspaint",
+    "image_edit_externally__block_Anki_during_edit": true,
+    "image_edit_externally__show_in_reviewer_context_menu": true,
+    "image_edit_externally__show_in_editor_context_menu": true,
+    "image_rename__show_in_editor_context_menu": false,
+    "image__show_context_menu_entry_for__showInExplorerFinderFileManager":false,
+    "sound__extensions_audio":["wav","mp3","m4a","opus","ogg","oga"],
+    "sound__external_program_audio":"audacity",
+    "sound__external_program_video":"vlc",
+    "sound__show_tooltip_two_soundfiles_selected":true,
+    "sound__show_context_menu_entry_for__duplicate":true,
+    "sound__show_context_menu_entry_for__editExternally":true,
+    "sound__show_context_menu_entry_for__rename":false,
+    "sound__show_context_menu_entry_for__showInExplorerFinderFileManager":false
+} 
