@@ -24,7 +24,7 @@ def open_in_external(fileabspath,external_program):
         os.system(open_command + fileabspath)
     else:
         #subprocess.Popen(external_program + " \"" + fileabspath + "\" ", shell = True) 
-        subprocess.Popen([external_program, fileabspath])
+        subprocess.Popen([external_program, fileabspath], shell = True)
 
 
 def _editExternal(editor,fname,type,field):
@@ -42,6 +42,8 @@ def _editExternal(editor,fname,type,field):
             # editor.setupWeb()  
             # editor.setupTags()
             editor.loadNote(focusTo=field)
+        else:
+            open_in_external(fileabspath,external_program)
     elif type == "sound":
         if ext.lower()[1:] in gc("sound__extensions_audio"):   # ext has leading "."
             external_program = gc("sound__external_program_audio")
