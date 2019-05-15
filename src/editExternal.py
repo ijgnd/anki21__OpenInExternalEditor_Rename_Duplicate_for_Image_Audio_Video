@@ -23,7 +23,8 @@ def open_in_external(fileabspath,external_program):
         fileabspath = re.sub(" ","\ ",fileabspath)
         os.system(open_command + fileabspath)
     else:
-        subprocess.Popen(external_program + " \"" + fileabspath + "\" ", shell = True) 
+        #subprocess.Popen(external_program + " \"" + fileabspath + "\" ", shell = True) 
+        subprocess.Popen([external_program, fileabspath])
 
 
 def _editExternal(editor,fname,type,field):
