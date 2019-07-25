@@ -1,38 +1,37 @@
 # License AGPLv3, see main
 
-import re 
+import re
 import os
+import datetime
 
 from bs4 import BeautifulSoup
 
 import aqt
 from aqt import mw
-from aqt.utils import getText,tooltip,showInfo
-#from aqt.addcards import AddCards
-#from aqt.editcurrent import EditCurrent
+from aqt.utils import getText, tooltip, showInfo
+# from aqt.addcards import AddCards
+# from aqt.editcurrent import EditCurrent
+
+from .config import gc
 
 
-def gc(arg,fail=False):
-    return mw.addonManager.getConfig(__name__).get(arg,fail)
-
-
-def get_unused_new_name(mediafolder,base,ext):
-    #getOnlyText doesn't offer default text
-    text, r = getText("New Name:",None,None,None,base)
+def get_unused_new_name(mediafolder, base, ext):
+    # getOnlyText doesn't offer default text
+    text, r = getText("New Name:", None, None, None, base)
     if not r:
         return False
     else:
         newfilename = text + ext
-        newpath = os.path.join(mediafolder,newfilename)
+        newpath = os.path.join(mediafolder, newfilename)
         if os.path.exists(newpath):
             tooltip('Error. Chosen filename already exists. Try again.')
-            newfilename = get_unused_new_name(mediafolder,base + "_1",ext)
+            newfilename = get_unused_new_name(mediafolder, base + "_1", ext)
         return newfilename
 
 
 def process_path(filename):
     mediafolder = os.path.join(mw.pm.profileFolder(), "collection.media")
-    fileabspath = os.path.join(mediafolder,filename)
+    fileabspath = os.path.join(mediafolder, filename)
     split = os.path.splitext(filename)
     base = split[0]
     ext = split[1]
@@ -40,8 +39,8 @@ def process_path(filename):
 
 
 def has_one_sound(text):
-    #video and audio both have [sound:]
-    #[sound:some file name.mp3]  
+    # video and audio both have [sound:]
+    # [sound:some file name.mp3]
     sounds = re.findall(r'\[sound:(.*?)\]', text)
     if len(sounds) == 0:
         return False
@@ -53,19 +52,20 @@ def has_one_sound(text):
         return sounds[0]
 
 
-def same_filename_in_just_one_editor(fname,type):
-    try:   # add-on "Opening the same window multiple time"
-           # so far I update only the current editor. If the same note is in other editors
-           # these don't get updated.
+def same_filename_in_just_one_editor(fname, type):
+    try:    # add-on "Opening the same window multiple time"
+            # so far I update only the current editor. If the same note is in other editors
+            # these don't get updated.
         aqt.dialogs._openDialogs
     except:
-        #only one browser allowed so it shouldn't be a problem?
-        #builtin = aqt.dialogs._dialogs
+        # only one browser allowed so it shouldn't be a problem?
+        # builtin = aqt.dialogs._dialogs
         return True
     else:
-        #about add-on "Opening the same window multiple time"
+        # about add-on "Opening the same window multiple time"
         windows = 0
-        relevant = (aqt.browser.Browser,aqt.addcards.AddCards,aqt.editcurrent.EditCurrent)
+        relevant = (aqt.browser.Browser, aqt.addcards.AddCards,
+                    aqt.editcurrent.EditCurrent)
         for i in aqt.dialogs._openDialogs:
             if isinstance(i, relevant):
                 try:
@@ -73,7 +73,7 @@ def same_filename_in_just_one_editor(fname,type):
                 except:
                     pass
                 else:
-                    #browser can have editor that has note = None
+                    # browser can have editor that has note = None
                     if n:
                         if type == "image":
                             s = ' src="' + fname    # not perfect, sometimes there's   img src='
@@ -81,7 +81,7 @@ def same_filename_in_just_one_editor(fname,type):
                             s = '[sound:' + fname
                         for f in i.editor.note.fields:
                             if s in f:
-                                windows +=1
+                                windows += 1
                                 break
         if windows > 1:
             str_ = "same note open in multiple editors (AddCards, Browser, EditCurrent).\n" + \
@@ -94,9 +94,9 @@ def same_filename_in_just_one_editor(fname,type):
             return True
 
 
-def replace_sound_in_editor_and_reload(editor,searchstring,replacestring,field):
+def replace_sound_in_editor_and_reload(editor, searchstring, replacestring, field):
     for i, c in enumerate(editor.note.fields):
-        new = c.replace(searchstring,replacestring)
+        new = c.replace(searchstring, replacestring)
         if c != new and not field:
             field = i
         editor.note.fields[i] = new
@@ -104,20 +104,20 @@ def replace_sound_in_editor_and_reload(editor,searchstring,replacestring,field):
     if field:
         editor.loadNote(focusTo=field)
     else:
-        editor.loadNote()   
+        editor.loadNote()
 
 
-def field_entry_duplicate_img(html,oldname,newname):
+def field_entry_duplicate_img(html, oldname, newname):
     soup = BeautifulSoup(html, "html.parser")
     images = soup.findAll('img')
     for image in images:
         if image['src'] == oldname:
-            new_tag = soup.new_tag("img",src=newname)
+            new_tag = soup.new_tag("img", src=newname)
             image.insert_after(new_tag)
     return str(soup)
 
 
-def field_entry_rename_img(html,oldname,newname):
+def field_entry_rename_img(html, oldname, newname):
     soup = BeautifulSoup(html, "html.parser")
     images = soup.findAll('img')
     for image in images:
@@ -126,16 +126,16 @@ def field_entry_rename_img(html,oldname,newname):
     return str(soup)
 
 
-def replace_img_in_editor_and_reload(editor,oldname,newname,action,field):
+def replace_img_in_editor_and_reload(editor, oldname, newname, action, field):
     """bs4 is needed to handle tags like '<img draggable="false" src="past'"""
     changed = 0
     for i, c in enumerate(editor.note.fields):
         if oldname in c:
             changed += 1
             if action == "duplicate":
-                new = field_entry_duplicate_img(c,oldname,newname)
+                new = field_entry_duplicate_img(c, oldname, newname)
             elif action == "rename":
-                new = field_entry_rename_img(c,oldname,newname)
+                new = field_entry_rename_img(c, oldname, newname)
             else:
                 print('Error')
             if c != new and not field:
@@ -146,4 +146,9 @@ def replace_img_in_editor_and_reload(editor,oldname,newname,action,field):
         if field:
             editor.loadNote(focusTo=field)
         else:
-            editor.loadNote()   
+            editor.loadNote()
+
+
+def time_now_fmt():
+    CurrentDT = datetime.datetime.now()
+    return CurrentDT.strftime("%Y-%m-%d__%H-%M-%S")
