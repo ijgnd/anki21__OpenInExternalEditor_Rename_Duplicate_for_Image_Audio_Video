@@ -79,7 +79,7 @@ def helper(editor, func, fname, type):
     if field:
         editor.saveNow(lambda: func(editor, fname, type, field))
     else:
-        func(editor, fname, type, None)
+        editor.saveNow(lambda: func(editor, fname, type, None))
 
 
 def add_to_context(view, menu):

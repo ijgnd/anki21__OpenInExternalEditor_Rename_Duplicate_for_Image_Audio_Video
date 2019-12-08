@@ -1,9 +1,12 @@
 # License AGPLv3, see main
 
+import os
+from shutil import which
 import subprocess
 
-from aqt.qt import *
 from anki.utils import isMac, isWin, isLin, noBundledLibs
+from aqt.qt import *
+from aqt.utils import showInfo
 
 from .helper import process_path
 
@@ -11,15 +14,20 @@ from .helper import process_path
 def myOpenFolder(path):
     """mod of aqt.utils openFolder"""
     if isWin:
-        subprocess.Popen(["explorer", "file://"+path])
-    elif isLin:
+        # subprocess.Popen(["explorer", ])  # original version, doesn't work in 2019-12
+        subprocess.Popen('explorer /select, {}'.format("file://"+path))
+    elif isLin and which("dolphin") is not None:
         # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
-        # from Ankiweb. If I use runanki with my local PyQtit works
+        # from Ankiweb. If I use runanki with my local PyQt it works
         subprocess.Popen(["dolphin", "--select", "file://"+path])
         # subprocess.Popen(["dolphin","--select",path])  #also works
     else:
         with noBundledLibs():
-            QDesktopServices.openUrl(QUrl("file://" + path))
+            filename = os.path.dirname(path)
+            showInfo("The file manager will show your media folder. The name of the file you "
+                     "clicked is:\n\n{}".format(filename))
+            dirname = os.path.dirname(path)
+            QDesktopServices.openUrl(QUrl("file://" + dirname))
 
 
 def show_in_filemanager(editor, filename):

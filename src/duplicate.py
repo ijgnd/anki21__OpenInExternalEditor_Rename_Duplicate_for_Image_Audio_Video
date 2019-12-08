@@ -16,12 +16,15 @@ from .helper import (
 
 
 def new_unused_name_auto_increment(mediafolder, base, ext):
-    n = re.findall(r'''_(\d*)$''', base)
+    n = re.findall(r'''_(\d+)$''', base)
     if len(n) > 0:
         n_at_end = n[0]
         if n_at_end:
             l = len(n_at_end)
             newbase = base[:-l] + str(int(n_at_end)+1)
+        # next two lines are a quick fix from 2019-12. maybe sideeffects ...
+        else:
+            newbase = base + "_1"
     else:
         newbase = base + "_1"
     newfilename = newbase + ext

@@ -35,9 +35,10 @@ def open_in_external(fileabspath, external_program, shell=True):
         fileabspath = re.sub(" ", "\ ", fileabspath)
         os.system(open_command + fileabspath)
     else:
-        # subprocess.Popen(external_program + " \"" + fileabspath + "\" ", shell = True)
+        # in 2019-12 I have no idea why I used shell=True by default in 2019-05. 
         if shell:
-            subprocess.Popen([external_program, fileabspath], shell=True)
+            # subprocess.Popen([external_program, fileabspath], shell=True)
+            subprocess.Popen("\"" + external_program+"\"" + " \"" + fileabspath + "\" ", shell = True)
         else:
             # in linux freeplane.sh needs this
             subprocess.Popen([external_program, fileabspath])
