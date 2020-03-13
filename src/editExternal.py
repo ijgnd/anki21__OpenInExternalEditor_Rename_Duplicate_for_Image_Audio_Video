@@ -31,7 +31,7 @@ def open_in_external(fileabspath, external_program, shell=True):
     if isMac:
         open_command = "open "
         if external_program:
-            open_command += '-a %s ' % external_program
+            open_command += '-a %s ' % (re.sub(" ", "\ ", external_program))
         fileabspath = re.sub(" ", "\ ", fileabspath)
         os.system(open_command + fileabspath)
     else:
