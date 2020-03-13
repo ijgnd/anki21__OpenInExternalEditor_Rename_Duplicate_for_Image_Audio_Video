@@ -23,11 +23,19 @@ def myOpenFolder(path):
         # subprocess.Popen(["dolphin","--select",path])  #also works
     else:
         with noBundledLibs():
-            filename = os.path.dirname(path)
-            showInfo("The file manager will show your media folder. The name of the file you "
-                     "clicked is:\n\n{}".format(filename))
-            dirname = os.path.dirname(path)
-            QDesktopServices.openUrl(QUrl("file://" + dirname))
+            script = """
+            tell application \"Finder\"
+                activate
+                select POSIX file \"{}\"
+            end tell
+            """.format(path)
+            args = [item for x in [("-e",l.strip()) for l in script.split('\n') if l.strip() != ''] for item in x]
+            subprocess.Popen(["osascript"] + args)
+            # filename = os.path.dirname(path)
+            # showInfo("The file manager will show your media folder. The name of the file you "
+            #          "clicked is:\n\n{}".format(filename))
+            # dirname = os.path.dirname(path)
+            # QDesktopServices.openUrl(QUrl("file://" + dirname)
 
 
 def show_in_filemanager(editor, filename):
