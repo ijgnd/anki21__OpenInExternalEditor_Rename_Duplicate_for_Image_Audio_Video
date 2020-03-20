@@ -8,8 +8,7 @@ from anki.utils import isMac, isWin, isLin, noBundledLibs
 from aqt.qt import *
 from aqt.utils import showInfo
 
-from .helper import process_path
-
+from .helper import process_path, osascript_to_args
 
 def myOpenFolder(path):
     """mod of aqt.utils openFolder"""
@@ -29,8 +28,7 @@ def myOpenFolder(path):
                 select POSIX file \"{}\"
             end tell
             """.format(path)
-            args = [item for x in [("-e",l.strip()) for l in script.split('\n') if l.strip() != ''] for item in x]
-            subprocess.Popen(["osascript"] + args)
+            subprocess.Popen(osascript_to_args(script))
             # filename = os.path.dirname(path)
             # showInfo("The file manager will show your media folder. The name of the file you "
             #          "clicked is:\n\n{}".format(filename))

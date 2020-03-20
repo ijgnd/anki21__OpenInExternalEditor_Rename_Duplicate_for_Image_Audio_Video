@@ -29,11 +29,7 @@ addHook("profileLoaded", some_paths)
 
 def open_in_external(fileabspath, external_program, shell=True):
     if isMac:
-        open_command = "open "
-        if external_program:
-            open_command += '-a %s ' % (re.sub(" ", "\ ", external_program))
-        fileabspath = re.sub(" ", "\ ", fileabspath)
-        os.system(open_command + fileabspath)
+        subprocess.Popen(["open", "-a", external_program, fileabspath])
     else:
         # in 2019-12 I have no idea why I used shell=True by default in 2019-05. 
         if shell:
