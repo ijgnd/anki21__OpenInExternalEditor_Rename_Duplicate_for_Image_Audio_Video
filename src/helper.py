@@ -3,6 +3,7 @@
 import re
 import os
 import datetime
+import itertools
 
 from bs4 import BeautifulSoup
 
@@ -152,3 +153,9 @@ def replace_img_in_editor_and_reload(editor, oldname, newname, action, field):
 def time_now_fmt():
     CurrentDT = datetime.datetime.now()
     return CurrentDT.strftime("%Y-%m-%d__%H-%M-%S")
+
+
+def osascript_to_args(script: str):
+    commands = [("-e", l.strip()) for l in script.split('\n') if l.strip() != '']
+    args = list(itertools.chain(*commands))
+    return ["osascript"] + args

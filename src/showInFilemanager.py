@@ -8,8 +8,7 @@ from anki.utils import isMac, isWin, isLin, noBundledLibs
 from aqt.qt import *
 from aqt.utils import showInfo
 
-from .helper import process_path
-
+from .helper import process_path, osascript_to_args
 
 def myOpenFolder(path):
     """mod of aqt.utils openFolder"""
@@ -23,11 +22,18 @@ def myOpenFolder(path):
         # subprocess.Popen(["dolphin","--select",path])  #also works
     else:
         with noBundledLibs():
-            filename = os.path.dirname(path)
-            showInfo("The file manager will show your media folder. The name of the file you "
-                     "clicked is:\n\n{}".format(filename))
-            dirname = os.path.dirname(path)
-            QDesktopServices.openUrl(QUrl("file://" + dirname))
+            script = """
+            tell application \"Finder\"
+                activate
+                select POSIX file \"{}\"
+            end tell
+            """.format(path)
+            subprocess.Popen(osascript_to_args(script))
+            # filename = os.path.dirname(path)
+            # showInfo("The file manager will show your media folder. The name of the file you "
+            #          "clicked is:\n\n{}".format(filename))
+            # dirname = os.path.dirname(path)
+            # QDesktopServices.openUrl(QUrl("file://" + dirname)
 
 
 def show_in_filemanager(editor, filename):
