@@ -1,32 +1,29 @@
-Use this at your own risk. 
+Use this at your own risk, also see the section "Limitations" below
 
-<b>Function</b>
-This add-on mainly works in the editor (AddCards Dialog, bottom of the browser). This add-on adds context menu entries that give you the following options:
+<b># Functions</b>
+This add-on mainly works in the editor (AddCards Dialog, bottom of the browser). This add-on adds context menu entries. For audio/video you only see the context menus if you have selected the whole "[sound:...]" text. You have the following options:
 
 - edit the file in an external application. If you edit an image and don't use a Mac the editor is reloaded by default so that your changes are shown.
 - duplicate the file. A copy will be put into the media folder and it will be inserted right after the current file in the editor. By default a number is appended ("_1","_2"). If shift is pressed when you click duplicate in the context menu you can select the new file name. This function might be more useful if you also use the add-on <a href="https://ankiweb.net/shared/info/1566928056" rel="nofollow">Copy notes</a> (in the browser) or <a href="https://ankiweb.net/shared/info/516643804" rel="nofollow">Frozen Fields</a> or <a href="https://ankiweb.net/shared/info/1247884413" rel="nofollow">Field History</a> (in the add window).
-- create a new and empty file and edit it with an external image editor. If you are interested in this you could also have a look at  the add-on <a href="https://ankiweb.net/shared/info/370778248" rel="nofollow">DrawingPad</a>. 
 - rename the file. By default this is disabled because this is experimental. If you use this make sure to have backups and know how to restore them.
 - show in file manager. By default this is disabled because it might not work with the version of Anki that you download from Ankiweb.
+- edit an empty file and edit it. I use this as an alternative for <a href="https://ankiweb.net/shared/info/370778248" rel="nofollow">DrawingPad</a> on machines where I don't have Java or when I need extended drawing options.
 
-
-<b>Limitations</b>
-- the rename function was not testet much and might mess cards permanently.
+<b># Limitations</b>
+- the rename function was not tested much and might mess cards permanently.
 - If you set the option "block_Anki" to "true" you might see unexpected behavior, see the section Configuration below.
 - editing from the reviewer means shuffling the queue. If you don't want this: press "e" for editcurrent and then use the contextmenu entries.
+- I don't have a Mac so I can't test what works on a Mac. In 2020-04 yhlai-code added some code for Mac, so some parts should work on Macs.
 
-
-<b>Configuration</b>
+<b># Configuration</b>
 Most of the options names should be self-explanatory. 
-- You must adjust the programs you use. The options with <code>external_program</code> refer to a program name. Depending on your system it might be enough to use a short command like <code>mspaint</code> (on Windows) or <code>pinta</code> (on linux). Sometimes you need the exact location. This depends on what you have in your PATH environment variable. In Windows if you use the exact location you need to to replace a single backslash (<code>\</code>) by double <code>\\</code>. This is a limitation of the underlying tools that Anki uses. e.g. if you want to use <code>C:\Program Files\paint.&#x200b;net\PaintDotNet.&#x200b;exe</code> you must put <code>C:\\Program Files\\paint.&#x200b;net\\PaintDotNet.&#x200b;exe</code> into the config.
+- You must adjust the programs you use. The options with <code>external_program</code> refer to a program name. Depending on your system it might be enough to use a short command like <code>mspaint</code> (on Windows) or <code>pinta</code> (on linux). Sometimes you need the exact location. This depends on what you have in your PATH environment variable. In Windows if you use the exact location you need to to replace a single backslash (<code>\</code>) by double <code>\\</code>. This is a limitation of the underlying tools that Anki uses. e.g. if you want to use <code>C:\Program Files\paint.​net\PaintDotNet.​exe</code> you must put <code>C:\\Program Files\\paint.​net\\PaintDotNet.​exe</code> into the config.
 - <code>image_edit_externally__block_Anki_during_edit</code> has no effect on Mac since I don't have a Mac to test. If "true" you can't use Anki as long as the image processing software is used. This way Anki knows when you close the image processing software. Then Anki reloads the editor so that you immediatly see the changes. If you use this setting and you move the editor window the Anki window might look broken on some systems until you close the image editor. 
 
+<b># Problems, Bugs, Errors, Improvements</b>
+If you find a bug let me know in the <a href="https://anki.tenderapp.com/discussions/add-ons/43314-openinexternaleditorrenameduplicate-for-imageaudiovideo-official-thread" rel="nofollow">official anki support forum</a>, on <a href="https://github.com/ijgnd/anki21__OpenInExternalEditor_Rename_Duplicate_for_Image_Audio_Video" rel="nofollow">github</a> or send a message via reddit to /u/ijgnord.
 
-<b>Problems, Bugs, Errors, Improvements</b>
-If you find a bug or have a bug fix or improvement please tell me on  <a href="https://github.com/ijgnd/anki21__edit_images_externally" rel="nofollow">github</a>. 
-
-
-<b>Other Authors</b>: 
+<b># Other Authors</b>: 
 - Ankitects Pty Ltd and contributors
 - 2016 mkpoli (<a href="https://ankiweb.net/shared/info/1828964467" rel="nofollow">Audio Renamer</a>)
 - 2016 Stevie Poppe (<a href="https://ankiweb.net/shared/info/1328067109" rel="nofollow">Remove Missing Audio References</a>
@@ -34,4 +31,4 @@ If you find a bug or have a bug fix or improvement please tell me on  <a href="h
 - 2016-18 glutanimate, ("Image Occlusion Enhanced", <a href="https://github.com/glutanimate/image-occlusion-enhanced/" rel="nofollow">https://github.com/glutanimate/image-occlusion-enhanced/</a>)
 - 2016 Dimitry Mikheev ("Edit Audio Images", <a href="https://ankiweb.net/shared/info/1075177705" rel="nofollow">https://ankiweb.net/shared/info/1075177705</a> and <a href="https://ankiweb.net/shared/info/1040866511" rel="nofollow">https://ankiweb.net/shared/info/1040866511</a>)
 - 2016 anonymous (<a href="https://ankiweb.net/shared/info/1829440730" rel="nofollow">Edit Images Externally (Mac OSx)</a>)
- 
+- <a href="https://github.com/ijgnd/anki21__OpenInExternalEditor_Rename_Duplicate_for_Image_Audio_Video/pull/2" rel="nofollow">2020 Y. H. Lai (yhlai-code)</a>

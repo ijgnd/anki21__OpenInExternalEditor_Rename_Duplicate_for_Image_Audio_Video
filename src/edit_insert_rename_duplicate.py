@@ -2,7 +2,7 @@
 Anki Add-on "OpenInExternalEditor,Rename,Duplicate for Image,Audio,Video"
 
 Copyright (c):
-- 2019 ijgned
+- 2019- ijgned
 - Ankitects Pty Ltd and contributors
 - 2016 mkpoli, Audio Renamer https://ankiweb.net/shared/info/1828964467
 - 2016 Stevie Poppe, Remove Missing Audio References https://ankiweb.net/shared/info/1328067109
@@ -11,6 +11,7 @@ Copyright (c):
 - 2016 Dimitry Mikheev, Edit Audio Images https://ankiweb.net/shared/info/1075177705
                                           https://ankiweb.net/shared/info/1040866511
 - 2016 anonymous, Edit Images Externally (Mac OSx) https://ankiweb.net/shared/info/1829440730
+- 2020 Y. H. Lai (yhlai-code) https://github.com/ijgnd/anki21__OpenInExternalEditor_Rename_Duplicate_for_Image_Audio_Video/pull/2
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
