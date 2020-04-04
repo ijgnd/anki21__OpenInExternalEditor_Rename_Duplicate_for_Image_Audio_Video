@@ -15,12 +15,7 @@ def myOpenFolder(path):
     if isWin:
         # subprocess.Popen(["explorer", ])  # original version, doesn't work in 2019-12
         subprocess.Popen('explorer /select, {}'.format("file://"+path))
-    elif isLin and which("dolphin") is not None:
-        # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
-        # from Ankiweb. If I use runanki with my local PyQt it works
-        subprocess.Popen(["dolphin", "--select", "file://"+path])
-        # subprocess.Popen(["dolphin","--select",path])  #also works
-    else:
+    elif isMac:
         with noBundledLibs():
             script = """
             tell application \"Finder\"
@@ -29,11 +24,21 @@ def myOpenFolder(path):
             end tell
             """.format(path)
             subprocess.Popen(osascript_to_args(script))
-            # filename = os.path.dirname(path)
-            # showInfo("The file manager will show your media folder. The name of the file you "
-            #          "clicked is:\n\n{}".format(filename))
-            # dirname = os.path.dirname(path)
-            # QDesktopServices.openUrl(QUrl("file://" + dirname)
+    elif isLin:
+        if which("dolphin") is not None:
+            # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
+            # from Ankiweb. If I use runanki with my local PyQt it works
+            subprocess.Popen(["dolphin", "--select", "file://"+path])
+            # subprocess.Popen(["dolphin","--select",path])  #also works
+        elif which("nautilus") is not None:
+            # caja 1.20 doesn't have "--select"
+            subprocess.Popen(["nautilus", "--select", "file://"+path])
+        else:
+            filename = os.path.dirname(path)
+            showInfo("The file manager will show your media folder. The name of the file you "
+                     "clicked is:\n\n{}".format(filename))
+            dirname = os.path.dirname(path)
+            QDesktopServices.openUrl(QUrl("file://" + dirname)
 
 
 def show_in_filemanager(editor, filename):
