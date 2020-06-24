@@ -54,7 +54,12 @@ from .showInFilemanager import show_in_filemanager
 
 
 def gc(arg, fail=False):
-    return mw.addonManager.getConfig(__name__).get(arg, fail)
+    conf =  mw.addonManager.getConfig(__name__)
+    if conf:
+        return conf.get(arg, fail)
+    else:
+        return fail
+
 
 ##############################################################################
 ###### Editor Context Menu
