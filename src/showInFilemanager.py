@@ -38,7 +38,7 @@ def myOpenFolder(path):
             showInfo("The file manager will show your media folder. The name of the file you "
                      "clicked is:\n\n{}".format(filename))
             dirname = os.path.dirname(path)
-            QDesktopServices.openUrl(QUrl("file://" + dirname)
+            QDesktopServices.openUrl(QUrl("file://" + dirname))
 
 
 def show_in_filemanager(editor, filename):
