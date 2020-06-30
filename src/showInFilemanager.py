@@ -41,8 +41,8 @@ def myOpenFolder(path):
             QDesktopServices.openUrl(QUrl("file://" + dirname))
 
 
-def show_in_filemanager(editor, filename):
-    mediafolder, fileabspath, base, ext = process_path(filename)
+def show_in_filemanager(filename):
+    _, fileabspath, _, _ = process_path(filename)
     # openFolder(fileabspath)
     # BUT doens't help: mp3 files are opened in the default audio player etc.
     # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
