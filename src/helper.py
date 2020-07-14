@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 import aqt
 from aqt import mw
+from aqt.qt import QApplication
 from aqt.utils import getText, tooltip, showInfo
 # from aqt.addcards import AddCards
 # from aqt.editcurrent import EditCurrent
@@ -159,3 +160,8 @@ def osascript_to_args(script: str):
     commands = [("-e", l.strip()) for l in script.split('\n') if l.strip() != '']
     args = list(itertools.chain(*commands))
     return ["osascript"] + args
+
+
+def clip_copy(filename):
+    _, fileabspath, _, _ = process_path(filename)
+    QApplication.clipboard().setText(fileabspath)

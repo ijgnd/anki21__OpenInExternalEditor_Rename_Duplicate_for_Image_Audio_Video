@@ -48,7 +48,7 @@ from aqt.utils import tooltip
 
 from .duplicate import _duplicate
 from .editExternal import _editExternal, new_and_edit, reviewer_context_edit_img_external
-from .helper import has_one_sound, same_filename_in_just_one_editor
+from .helper import has_one_sound, same_filename_in_just_one_editor, clip_copy
 from .rename import _rename
 from .showInFilemanager import show_in_filemanager
 
@@ -140,6 +140,9 @@ def add_to_context(view, menu):
             a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _duplicate, fn, "image"))
         if gc("image__show_context_menu_entry_for__showInExplorerFinderFileManager"):
             cmd_filemanager(menu, fname, "Image")
+        if gc("image__show_context_menu_entry_for__showPathAndPutToClipboard"):
+            a = menu.addAction("Image - Copy Path to Clipboard")
+            a.triggered.connect(lambda _, fn=fname: clip_copy(fn))
     else:
         fname = has_one_sound(view.selectedText())
         if fname:
@@ -159,6 +162,9 @@ def add_to_context(view, menu):
                 a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _duplicate, fn, "sound"))
             if gc("sound__show_context_menu_entry_for__showInExplorerFinderFileManager"):
                 cmd_filemanager(menu, fname, "Sound (Audio/Video)")
+            if gc("sound__show_context_menu_entry_for__showPathAndPutToClipboard"):
+                a = menu.addAction("Sound - Copy Path to Clipboard")
+                a.triggered.connect(lambda _, fn=fname: clip_copy(fn))
 addHook("EditorWebView.contextMenuEvent", add_to_context)
 
 
@@ -179,5 +185,8 @@ def _reviewerContextMenu(view, menu):
         a.triggered.connect(lambda _, v=view, fn=fname: reviewer_context_edit_img_external(v, fn))
         if gc("image__show_context_menu_entry_for__showInExplorerFinderFileManager"):
             cmd_filemanager(menu, fname, "Image")
+        if gc("image__show_context_menu_entry_for__showPathAndPutToClipboard"):
+            a = menu.addAction("Image - Copy Path to Clipboard")
+            a.triggered.connect(lambda _, fn=fname: clip_copy(fn))
 if gc("image_edit_externally__show_in_reviewer_context_menu"):
     addHook('AnkiWebView.contextMenuEvent', _reviewerContextMenu)
