@@ -8,6 +8,7 @@ from anki.utils import isMac, isWin, isLin, noBundledLibs
 from aqt.qt import *
 from aqt.utils import showInfo, openFolder
 
+from .config import gc
 from .helper import process_path, osascript_to_args
 
 
@@ -37,20 +38,27 @@ def myOpenFolder(path):
             """.format(path)
             subprocess.Popen(osascript_to_args(script))
     elif isLin:
-        if which("dolphin") is not None:
-            # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
-            # from Ankiweb. If I use runanki with my local PyQt it works
-            subprocess.Popen(["dolphin", "--select", "file://"+path])
-            # subprocess.Popen(["dolphin","--select",path])  #also works
-        elif which("nautilus") is not None:
-            # caja 1.20 doesn't have "--select"
-            subprocess.Popen(["nautilus", "--select", "file://"+path])
+        us = gc("File Manager in Linux and its args")
+        if us:
+            # ['nautilus', '--select', 'file:///...png'] doesn't work with the compiled 2.1.26:
+            # nautilus: /path/to/Anki26/bin/liblzma.so.5: version `XZ_5.2' not found (required by /lib/x86_64-linux-gnu/libarchive.so.13)
+            us.append("file://"+path)
+            subprocess.Popen(us)
         else:
-            filename = os.path.dirname(path)
-            showInfo("The file manager will show your media folder. The name of the file you "
-                     "clicked is:\n\n{}".format(filename))
-            dirname = os.path.dirname(path)
-            QDesktopServices.openUrl(QUrl("file://" + dirname))
+            if which("dolphin") is not None:
+                # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
+                # from Ankiweb. If I use runanki with my local PyQt it works
+                subprocess.Popen(["dolphin", "--select", "file://"+path])
+                # subprocess.Popen(["dolphin","--select",path])  #also works
+            elif which("nautilus") is not None:
+                # caja 1.20 doesn't have "--select"
+                subprocess.Popen(["nautilus", "--select", "file://"+path])
+            else:
+                filename = os.path.dirname(path)
+                showInfo("The file manager will show your media folder. The name of the file you "
+                        "clicked is:\n\n{}".format(filename))
+                dirname = os.path.dirname(path)
+                QDesktopServices.openUrl(QUrl("file://" + dirname))
 
 
 def show_in_filemanager(filename):

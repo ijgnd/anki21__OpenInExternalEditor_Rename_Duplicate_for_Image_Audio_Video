@@ -1,4 +1,5 @@
 {
+    "File Manager in Linux and its args": ["nautilus", "--select"],
     "backup_on_rename": true,
     "image__show_context_menu_entry_for__showInExplorerFinderFileManager": true,
     "image_duplicate__show_in_editor_context_menu": true,
