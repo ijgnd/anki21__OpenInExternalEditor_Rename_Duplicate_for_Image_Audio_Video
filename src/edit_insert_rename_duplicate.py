@@ -2,7 +2,7 @@
 Anki Add-on "OpenInExternalEditor,Rename,Duplicate for Image,Audio,Video"
 
 Copyright (c):
-- 2019- ijgned
+- 2019- ijgnd
 - Ankitects Pty Ltd and contributors
 - 2016 mkpoli, Audio Renamer https://ankiweb.net/shared/info/1828964467
 - 2016 Stevie Poppe, Remove Missing Audio References https://ankiweb.net/shared/info/1328067109
