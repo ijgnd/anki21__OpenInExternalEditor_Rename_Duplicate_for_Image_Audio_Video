@@ -6,9 +6,21 @@ import subprocess
 
 from anki.utils import isMac, isWin, isLin, noBundledLibs
 from aqt.qt import *
-from aqt.utils import showInfo
+from aqt.utils import showInfo, openFolder
 
 from .helper import process_path, osascript_to_args
+
+
+"""
+from aqt.utils
+def openFolder(path):
+    if isWin:
+        subprocess.Popen(["explorer", "file://" + path])
+    else:
+        with noBundledLibs():
+            QDesktopServices.openUrl(QUrl("file://" + path))
+
+"""
 
 def myOpenFolder(path):
     """mod of aqt.utils openFolder"""
@@ -44,7 +56,8 @@ def myOpenFolder(path):
 def show_in_filemanager(filename):
     _, fileabspath, _, _ = process_path(filename)
     # openFolder(fileabspath)
-    # BUT doens't help: mp3 files are opened in the default audio player etc.
+    # BUT doens't help: mp3 files are opened in the default audio player, images in imageviewer
+    # I had this problem in 2019 and it still persists in 2020-07.
     # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
     # from Ankiweb. If I use runanki with my local PyQt it works
     # I tried in 2.1.12 without add-ons and in Preferences -> Backups I clicked
