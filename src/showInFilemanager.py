@@ -39,20 +39,19 @@ def myOpenFolder(path):
             subprocess.Popen(osascript_to_args(script))
     elif isLin:
         us = gc("File Manager in Linux and its args")
+        env = os.environ.copy()
+        toremove = ['LD_LIBRARY_PATH', 'QT_PLUGIN_PATH', 'QML2_IMPORT_PATH']
+        for e in toremove:
+            env.pop(e, None)
         if us:
-            # ['nautilus', '--select', 'file:///...png'] doesn't work with the compiled 2.1.26:
-            # nautilus: /path/to/Anki26/bin/liblzma.so.5: version `XZ_5.2' not found (required by /lib/x86_64-linux-gnu/libarchive.so.13)
             us.append("file://"+path)
-            subprocess.Popen(us)
+            subprocess.Popen(us, env=env)
         else:
             if which("dolphin") is not None:
-                # BUT in 2019-05 (in KDE) openFolder doesn't work for me in the prebuilt/compiled version
-                # from Ankiweb. If I use runanki with my local PyQt it works
-                subprocess.Popen(["dolphin", "--select", "file://"+path])
-                # subprocess.Popen(["dolphin","--select",path])  #also works
+                subprocess.Popen(["dolphin", "--select", "file://"+path], env=env)
             elif which("nautilus") is not None:
                 # caja 1.20 doesn't have "--select"
-                subprocess.Popen(["nautilus", "--select", "file://"+path])
+                subprocess.Popen(["nautilus", "--select", "file://"+path], env=env)
             else:
                 filename = os.path.dirname(path)
                 showInfo("The file manager will show your media folder. The name of the file you "
