@@ -73,8 +73,8 @@ def apply_to_notes(old, new, type):
         backup_rename(changednids, renamedfiles)
     modNids = str([a for a in changednids.keys()])
     modFiles = str([a for a in renamedfiles.keys()])
-    status = 'changed nids: %s, renamed files: %s' % (modNids, modFiles)
-    tooltip(status)
+    s = f'Updated file location/reference in these notes: {modNids},<br>renamed files: {modFiles}'
+    tooltip(s, period=6000)
 
 
 def _rename(editor, fname, type, field):
