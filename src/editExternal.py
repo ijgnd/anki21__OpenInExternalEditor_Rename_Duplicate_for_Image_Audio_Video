@@ -31,7 +31,7 @@ def open_in_external(fileabspath, external_program, shell=True):
     if isMac:
         subprocess.Popen(["open", "-a", external_program, fileabspath])
     else:
-        # in 2019-12 I have no idea why I used shell=True by default in 2019-05. 
+        # in 2019-12 I have no idea why I used shell=True by default in 2019-05.
         if shell:
             # subprocess.Popen([external_program, fileabspath], shell=True)
             subprocess.Popen("\"" + external_program+"\"" + " \"" + fileabspath + "\" ", shell = True)
@@ -56,12 +56,12 @@ def external_progs_and_their_settings(all=True):
             ".drawio",
             gc("image_diagram_mindmap__drawio_template"),
             "_drawio___",
-            ],   
+            ],
         "lo": [gc("image_diagram_mindmap__CalcDraw_path"),
             ".odg",
             gc("image_diagram_mindmap__CalcDraw_template"),
             "_LODraw___",
-            ], 
+            ],
     }
     if not all:
         return ec
@@ -173,7 +173,7 @@ def editDiaMMExternal(editor, field, prog, template, f):
     else:
         # in 2019-06 freeplane needs False if openend with freeplane.sh
         open_in_external(f.sourcepath, prog, False)
-        
+
 
 def new_and_edit(editor, arg):
     if arg == "ni":
@@ -192,13 +192,21 @@ def new_and_edit(editor, arg):
 
 
 def reviewer_context_edit_img_external(view, fname):
+    token = int(time.time())
     mediafolder, fileabspath, base, ext = process_path(fname)
     external_program = gc('image_edit_externally__program')
     # mw.reviewer.web.eval("document.activeElement.blur();")  #?
     if gc("image_edit_externally__block_Anki_during_edit") and not isMac:
         subprocess.check_output([external_program, fname])
-        # the similar function for the editor works but not here
-        # view.page().profile().clearHttpCache()
-        mw.reset(guiOnly=True)  # ?
+        # Reload image by adding a query parameter at the back
+        mw.reviewer.web.eval("""
+$('img').each(function(){
+    var src = $(this).attr('src');
+    src = src.replace(/token=(\d+)&/, '')
+    src = src.replace(/\?token=(\d+)/, '')
+    src += (src.match(/\?/) ? '&' : '?') + 'token=%d';
+    $(this).attr('src', src);
+});
+        """ % token)
     else:
         open_in_external(fileabspath, external_program)
