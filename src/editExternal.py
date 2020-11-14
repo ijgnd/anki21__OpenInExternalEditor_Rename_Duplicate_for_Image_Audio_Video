@@ -8,6 +8,8 @@ import json
 import types
 import time
 
+from pathlib import Path
+
 from anki.hooks import addHook
 from anki.utils import isMac, isWin, isLin
 from aqt import mw
@@ -110,6 +112,8 @@ def _editExternal(editor, fname, type, field):
         if external_program:
             open_in_external(fileabspath, external_program)
 
+    Path(mediafolder).touch()
+
 
 def new_and_edit_image(editor):
     template = gc("image_empty_insert_and_edit__file_from_user_files")
@@ -174,6 +178,8 @@ def editDiaMMExternal(editor, field, prog, template, f):
         # in 2019-06 freeplane needs False if openend with freeplane.sh
         open_in_external(f.sourcepath, prog, False)
 
+    Path(mediafolder).touch()
+
 
 def new_and_edit(editor, arg):
     if arg == "ni":
@@ -210,3 +216,5 @@ $('img').each(function(){
         """ % token)
     else:
         open_in_external(fileabspath, external_program)
+
+    Path(mediafolder).touch()
