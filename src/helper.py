@@ -102,7 +102,8 @@ def replace_sound_in_editor_and_reload(editor, searchstring, replacestring, fiel
         if c != new and not field:
             field = i
         editor.note.fields[i] = new
-    editor.note.flush()
+    if not editor.addMode:
+        editor.note.flush()
     if field:
         editor.loadNote(focusTo=field)
     else:
@@ -144,7 +145,8 @@ def replace_img_in_editor_and_reload(editor, oldname, newname, action, field):
                 field = i
             editor.note.fields[i] = new
     if not changed == 0:
-        editor.note.flush()
+        if not editor.addMode:
+            editor.note.flush()
         if field:
             editor.loadNote(focusTo=field)
         else:
