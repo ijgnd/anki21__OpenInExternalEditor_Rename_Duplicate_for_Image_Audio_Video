@@ -1,20 +1,18 @@
 # License AGPLv3, see main
-# * rename.apply_to_notes uses code from Audio Renamer which is covered by
-# * the following copyright and permission notice:
-# *
-# * @author: mkpoli
-# * https://github.com/mkpoli
-# * License WTFPL
 
-
+import re
 import os
-import time
 
+from anki.find import findReplace
 from aqt import mw
 from aqt.utils import tooltip
 
-from .config import gc
+from .config import (
+    gc,
+    pointversion,
+)
 from .helper import (
+    browser_parents,
     process_path,
     get_unused_new_name,
     replace_sound_in_editor_and_reload,
@@ -22,69 +20,109 @@ from .helper import (
 )
 
 
-def backup_rename(changednids, renamedfiles):
+def _replace_all_img_src(orig_name: str, new_name: str):
+    "new_name doesn't have whitespace, dollar sign, nor double quote"
+    
+    orig_name = re.escape(orig_name)
+    new_name = new_name
+
+    # Compatibility: 2.1.0+
+    n = mw.col.findNotes("<img")
+
+    # src element quoted case
+    reg1 = r"""(?P<first><img[^>]* src=)(?:"{name}")|(?:'{name}')(?P<second>[^>]*>)""".format(
+        name=orig_name
+    )
+    # unquoted case
+    reg2 = r"""(?P<first><img[^>]* src=){name}(?P<second>(?: [^>]*>)|>)""".format(
+        name=orig_name
+    )
+    img_regs = [reg1]
+    if " " not in orig_name:
+        img_regs.append(reg2)
+    
+    if pointversion >= 28:
+        repl = """${first}"%s"${second}""" % new_name
+    else:
+        repl = """\\g<first>"%s"\\g<second>""" % new_name
+
+    replaced_cnt = 0
+    for reg in img_regs:
+        if pointversion >= 28:
+            replaced_cnt += mw.col.backend.find_and_replace(
+                nids=n,
+                search=reg,
+                replacement=repl,
+                regex=True,
+                match_case=False,
+                field_name=None,
+            )
+        else:
+            replaced_cnt += findReplace(col=mw.col, nids=n, src=reg, dst=repl, regex=True, fold=False)
+    return replaced_cnt
+
+
+def _replace_all_sound_src(orig_name: str, new_name: str):
+    "new_name doesn't have whitespace, dollar sign, nor double quote"
+    
+    old = f"[sound:{orig_name}"
+    new = f"[sound:{new_name}"
+
+    # Compatibility: 2.1.0+
+    n = mw.col.findNotes("[sound")
+
+    replaced_cnt = 0
+    if pointversion >= 28:
+        replaced_cnt += mw.col.backend.find_and_replace(
+            nids=n,
+            search=old,
+            replacement=new,
+            regex=False,
+            match_case=False,
+            field_name=None,
+        )
+    else:
+        replaced_cnt += findReplace(col=mw.col, nids=n, src=old, dst=new, regex=False, fold=False)
+    return replaced_cnt
+
+
+def backup_changed_filenames(old, new):
     addon_dir_path = os.path.join(os.path.dirname(__file__))
-    now = time.strftime('%Y-%m-%d__%H_%M_%S', time.localtime(time.time()))
-    # user_files is not overwritten on update, see addons.py#229 _install()
-    backupdir = os.path.join(addon_dir_path, "user_files",
-                             "backups_renameImageSound", now)
-    fieldsdir = os.path.join(backupdir, "fieldcontents")
-    if not os.path.isdir(fieldsdir):
-        os.makedirs(fieldsdir)
-    csv_file = os.path.join(backupdir, "renamed_files.csv")
-    with open(csv_file, 'w') as f:
-        for k, v in renamedfiles.items():
-            f.write("%s\t%s\n" % (k, v))
-    for k, v in changednids.items():
-        nidfile = os.path.join(fieldsdir, str(k) + '.txt')
-        with open(nidfile, "w") as f:
-            f.write(v)
+    renamed_file = os.path.join(addon_dir_path, "user_files", "renamed_files.csv")
+    with open(renamed_file, "a") as targetfile:
+        targetfile.write(f"{old}\t{new}")
 
 
-def apply_to_notes(old, new, type):
-    rpls = {}
-    if type == "sound":
-        rpls[':' + old] = ':' + new
-    elif type == "image":
-        rpls['src="' + old] = 'src="' + new
-        # sometimes people use img src='
-        rpls["src='" + old] = "src='" + new
-
-    changednids = {}
-    renamedfiles = {}
-    for r in mw.col.db.execute("select id, flds from notes"):
-        nid = r[0]
-        allFldsContent = r[1]
-        for _old, _new in rpls.items():
-            if _old in allFldsContent:
-                changednids[nid] = allFldsContent
-                newFlds = allFldsContent.replace(_old, _new)
-                updateQuery = "UPDATE notes SET flds=? WHERE id=?"
-                mw.col.db.execute(updateQuery, newFlds, nid)
-                # this is not foolproof: I assume that the same file is not referenced twice
-                # in the same note with different notations ("" vs '')
-                if not os.path.isfile(new):
-                    os.rename(old, new)
-                    renamedfiles[old] = new
-    if gc("backup_on_rename", True):
-        backup_rename(changednids, renamedfiles)
-    modNids = str([a for a in changednids.keys()])
-    modFiles = str([a for a in renamedfiles.keys()])
-    s = f'Updated file location/reference in these notes: {modNids},<br>renamed files: {modFiles}'
+def notify_user(cnt,  oldname, newfilename):
+    s = f'Updated file location/reference in {cnt} note{"s" if cnt > 1 else ""}: <br> from {oldname} to {newfilename}'
     tooltip(s, period=6000)
 
 
-def _rename(editor, fname, type, field):
+def rename(editor, fname, type, field):
     mediafolder, fileabspath, base, ext = process_path(fname)
     if os.path.isfile(fileabspath):  # verify
         newfilename = get_unused_new_name(mediafolder, base, ext)
-        if newfilename:
-            # mw.col.findNotes doesn't help because filenames may contain "()" and ":"
-            # which don't work with search
-            # so findReplace which needs a list of nids doesn't work
-            apply_to_notes(fname, newfilename, type)
+        if newfilename:           
+            # reuse from "Image Editor" (307397307 from 2020-07-06)
+            # that's more or less its replace_all_img_src
+            ep = editor.parentWindow
+            br = browser_parents()
+            if ep in br:
+                ep.model.beginReset()
+            if type == "image":
+                cnt = _replace_all_img_src(fname, newfilename)
+            elif type == "sound":
+                cnt = _replace_all_sound_src(fname, newfilename)
+            mw.requireReset()
+            if ep in br:
+                ep.model.endReset()
+            notify_user(cnt, fname, newfilename)
 
-            # update fields
+            if not os.path.isfile(newfilename):
+                os.rename(fname, newfilename)
+            backup_changed_filenames(fname, newfilename)
+            
+            # update editor
             if type == "sound":
                 searchstring = '[sound:' + fname + ']'
                 replacestring = '[sound:' + newfilename + ']'

@@ -9,12 +9,22 @@ from bs4 import BeautifulSoup
 
 import aqt
 from aqt import mw
+from aqt.browser import Browser
 from aqt.qt import QApplication
 from aqt.utils import getText, tooltip, showInfo
-# from aqt.addcards import AddCards
-# from aqt.editcurrent import EditCurrent
 
 from .config import gc
+
+
+def browser_parents():
+    relevant_parents = [Browser]
+    try:
+        a = __import__("874215009").advancedbrowser.core.AdvancedBrowser
+    except:
+        pass
+    else: 
+        relevant_parents.append(a)
+    return relevant_parents
 
 
 def get_unused_new_name(mediafolder, base, ext):
@@ -23,6 +33,12 @@ def get_unused_new_name(mediafolder, base, ext):
     if not r:
         return False
     else:
+        # since 2020-02, https://github.com/ankitects/anki/commit/41266f46f11da2294ef2fb22bb473e793d3ae48b
+        # there's rslib/src/media/files.rs#L62
+        anki_illegal = ['[', ']', '<', '>', ':', '"', '/', '?', '*', '^', '\\', '|']
+        image_editor_illegal = ["$", ":", " "]  # for _replace_all_img_src in rename.py
+        for i in anki_illegal + image_editor_illegal:
+            text = text.replace(i, "_")
         newfilename = text + ext
         newpath = os.path.join(mediafolder, newfilename)
         if os.path.exists(newpath):

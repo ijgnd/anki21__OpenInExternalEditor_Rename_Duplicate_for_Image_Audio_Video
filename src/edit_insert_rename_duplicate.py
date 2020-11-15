@@ -4,7 +4,7 @@ Anki Add-on "OpenInExternalEditor,Rename,Duplicate for Image,Audio,Video"
 Copyright (c):
 - 2019- ijgnd
 - Ankitects Pty Ltd and contributors
-- 2016 mkpoli, Audio Renamer https://ankiweb.net/shared/info/1828964467
+- 2020 BlueGreenMagick
 - 2016 Stevie Poppe, Remove Missing Audio References https://ankiweb.net/shared/info/1328067109
 - 2018 ChrisK91 Edit Images Externally, Updated (Windows) https://ankiweb.net/shared/info/771313609
 - 2016-18 glutanimate, Image Occlusion Enhanced https://github.com/glutanimate/image-occlusion-enhanced
@@ -25,13 +25,6 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
- * rename.apply_to_notes uses code from Audio Renamer which is covered by
- * the following copyright and permission notice:
- *
- * @author: mkpoli
- * https://github.com/mkpoli
- * License WTFPL
 """
 
 
@@ -46,19 +39,13 @@ from aqt.editor import Editor
 from aqt.utils import tooltip
 
 
+from .config import gc
 from .duplicate import _duplicate
 from .editExternal import _editExternal, new_and_edit, reviewer_context_edit_img_external
 from .helper import has_one_sound, same_filename_in_just_one_editor, clip_copy
-from .rename import _rename
+from .rename import rename
 from .showInFilemanager import show_in_filemanager
 
-
-def gc(arg, fail=False):
-    conf =  mw.addonManager.getConfig(__name__)
-    if conf:
-        return conf.get(arg, fail)
-    else:
-        return fail
 
 
 ##############################################################################
@@ -134,7 +121,7 @@ def add_to_context(view, menu):
         if gc("image_rename__show_in_editor_context_menu"):
             if same_filename_in_just_one_editor(fname, "image"):
                 a = menu.addAction(_("Image - Rename"))
-                a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _rename, fn, "image"))
+                a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, rename, fn, "image"))
         if gc("image_duplicate__show_in_editor_context_menu"):
             a = menu.addAction(_("Image - Duplicate"))
             a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _duplicate, fn, "image"))
@@ -156,7 +143,7 @@ def add_to_context(view, menu):
             if gc("sound__show_context_menu_entry_for__rename"):
                 if same_filename_in_just_one_editor(fname, "sound"):
                     a = menu.addAction(_("Sound (Audio/Video) - rename"))
-                    a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _rename, fn, "sound"))
+                    a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, rename, fn, "sound"))
             if gc("sound__show_context_menu_entry_for__duplicate"):
                 a = menu.addAction(_("Sound (Audio/Video) - duplicate"))
                 a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _duplicate, fn, "sound"))
