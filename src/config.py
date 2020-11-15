@@ -7,3 +7,8 @@ def gc(arg, fail=False):
         return conf.get(arg, fail)
     else:
         return fail
+
+from anki import version as anki_version
+
+_, _, point = anki_version.split(".")
+pointversion = int(point)
