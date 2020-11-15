@@ -13,16 +13,13 @@ import time
 from aqt import mw
 from aqt.utils import tooltip
 
+from .config import gc
 from .helper import (
     process_path,
     get_unused_new_name,
     replace_sound_in_editor_and_reload,
     replace_img_in_editor_and_reload
 )
-
-
-def gc(arg, fail=False):
-    return mw.addonManager.getConfig(__name__).get(arg, fail)
 
 
 def backup_rename(changednids, renamedfiles):
