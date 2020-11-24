@@ -11,7 +11,12 @@ import time
 from pathlib import Path
 
 from anki.hooks import addHook
-from anki.utils import isMac, isWin, isLin
+from anki.utils import (
+    isLin,
+    isMac,
+    isWin,
+    noBundledLibs,
+)
 from aqt import mw
 from aqt.editor import Editor
 from aqt.utils import getText, showInfo
@@ -30,16 +35,15 @@ addHook("profileLoaded", some_paths)
 
 
 def open_in_external(fileabspath, external_program, shell=True):
-    if isMac:
-        subprocess.Popen(["open", "-a", external_program, fileabspath])
-    else:
-        # in 2019-12 I have no idea why I used shell=True by default in 2019-05.
-        if shell:
-            # subprocess.Popen([external_program, fileabspath], shell=True)
-            subprocess.Popen("\"" + external_program+"\"" + " \"" + fileabspath + "\" ", shell = True)
+    with noBundledLibs():
+        if isMac:
+            subprocess.Popen(["open", "-a", external_program, fileabspath])
         else:
-            # in linux freeplane.sh needs this
-            subprocess.Popen([external_program, fileabspath])
+            # in 2019-12 I have no idea why I used shell=True by default in 2019-05.
+            if shell:
+                subprocess.Popen(f' "{external_program}" "{fileabspath}" ', shell = True)
+            else:
+                subprocess.Popen([external_program, fileabspath])
 
 
 def external_progs_and_their_settings(all=True):
