@@ -135,7 +135,7 @@ def new_and_edit_image(editor):
             _editExternal(editor, newname, "image", editor.currentField))
 
 
-def new_name_with_user_query(ec, arg, prefill=""):
+def new_name_with_user_query(prog_ext, prog_fname_identifier, prefill=""):
     if prefill:
         text = 'Filename already exists. Try again with a different name.'
     else:
@@ -144,36 +144,36 @@ def new_name_with_user_query(ec, arg, prefill=""):
     name, r = getText(text, default=prefill)
     if not r:
         return None, None, None, None
-    sourcename = "_" + ec[arg][3] + name + ec[arg][1]
+    sourcename = "_" + prog_fname_identifier + name + prog_ext
     sourcepath = os.path.join(mediafolder, sourcename)
-    imagename = "_" + ec[arg][3] + name + ".png"
+    imagename = "_" + prog_fname_identifier + name + ".png"
     imagepath = os.path.join(mediafolder, imagename)
     for f in [sourcepath, imagepath]:
         if os.path.exists(f):
-            return new_name_with_user_query(ec, arg, prefill=name)
+            return new_name_with_user_query(prog_ext, prog_fname_identifier, prefill=name)
     return sourcename, sourcepath, imagename, imagepath
 
 
 def editDiaMMExternal(editor, field, prog, template, sourcepath):
     template_full_path = os.path.join(addon_path, "user_files", template)
-    shutil.copy(template_full_path, f.sourcepath)
+    shutil.copy(template_full_path, sourcepath)
     copying = True
     size2 = -1
     while copying:
-        size = os.path.getsize(f.sourcepath)
+        size = os.path.getsize(sourcepath)
         if size == size2:
             break
         else:
-            size2 = os.path.getsize(f.sourcepath)
+            size2 = os.path.getsize(sourcepath)
             time.sleep(0.1)
     if not isMac:
-        subprocess.check_output([prog, f.sourcepath])
+        subprocess.check_output([prog, sourcepath])
         editor.saveTags()
         editor.web.page().profile().clearHttpCache()
         editor.loadNote(focusTo=field)
     else:
         # in 2019-06 freeplane needs False if openend with freeplane.sh
-        open_in_external(f.sourcepath, prog, False)
+        open_in_external(sourcepath, prog, False)
 
     Path(mediafolder).touch()
 
@@ -183,15 +183,14 @@ def new_and_edit(editor, arg):
         # separate function: historic reasons, also no difference between data and image
         new_and_edit_image(editor)
         return
-    ec = external_progs_and_their_settings()
-    f = types.SimpleNamespace()
-    f.sourcename, f.sourcepath, f.imagename, f.imagepath = new_name_with_user_query(ec, arg)
-    if not f.sourcepath:
+    prog_path, prog_ext, prog_template, prog_fname_identifier = external_progs_and_their_settings()[arg]
+    _, sourcepath, imagename, _ = new_name_with_user_query(prog_ext, prog_fname_identifier)
+    if not sourcepath:
         return
-    newimg = """<img src="%s">""" % f.imagename
+    newimg = """<img src="%s">""" % imagename
     editor.web.eval("document.execCommand('inserthtml', false, %s);"
                 % json.dumps(newimg))
-    editor.saveNow(lambda: editDiaMMExternal(editor, editor.currentField, ec[arg][0], ec[arg][2], f), keepFocus=True)
+    editor.saveNow(lambda: editDiaMMExternal(editor, editor.currentField, prog_path, prog_template, sourcepath), keepFocus=True)
 
 
 def reviewer_context_edit_img_external(view, fname):
