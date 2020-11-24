@@ -84,20 +84,25 @@ def add_to_context(view, menu):
 
     if not url.isValid():
         ni = (gc("image_empty_insert_and_edit__show_in_editor_context_menu", False),
-            "ni",
-            "Image - New Empty Image and Edit")
+              "ni",
+              "Image - New Empty Image and Edit"
+            )
         fp = (gc("image_diagram_mindmap__freeplane_path", False),
-            "fp",
-            "Image - Inset New Mindmap and Edit with Freeplane")
+              "fp",
+              "Image - Inset New Mindmap and Edit with Freeplane"
+            )
         dia = (gc("image_diagram_mindmap__dia_path", False),
-            "dia",
-            "Image - Insert New Diagram and Edit with Dia")
+               "dia",
+               "Image - Insert New Diagram and Edit with Dia"
+            )
         draw = (gc("image_diagram_mindmap__draw_path", False),
-            "drawio",
-            "Image - Insert New Diagram and Edit with Drawio")
+                "drawio",
+                "Image - Insert New Diagram and Edit with Drawio"
+            )
         lo = (gc("image_diagram_mindmap__CalcDraw_path", False),
-            "lo",
-            "Image - Insert New Diagramdand Edit with LibreOffice Draw")
+              "lo",
+              "Image - Insert New Diagramdand Edit with LibreOffice Draw"
+            )
         total = 0
         for f in [ni, fp, dia, draw, lo]:
             if f[0]:
