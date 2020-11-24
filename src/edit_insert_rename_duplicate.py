@@ -31,7 +31,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import os
 
 from anki.hooks import addHook
-from anki.lang import _
 from anki.utils import isMac, isWin, isLin
 from aqt import mw
 from aqt.qt import *
@@ -52,7 +51,7 @@ from .showInFilemanager import show_in_filemanager
 ###### Editor Context Menu
 
 # def cme(menu,text,func):
-#     a = menu.addAction(_(text))
+#     a = menu.addAction(text)
 #     a.triggered.connect(func)
 
 
@@ -116,14 +115,14 @@ def add_to_context(view, menu):
                     a.triggered.connect(lambda _, o=i[1], ed=e: new_and_edit(e, o))
     if url.isValid() and os.path.isfile(fileabspath):
         if gc("image_edit_externally__show_in_editor_context_menu"):
-            a = menu.addAction(_("Image - Edit"))
+            a = menu.addAction("Image - Edit")
             a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _editExternal, fn, "image"))
         if gc("image_rename__show_in_editor_context_menu"):
             if same_filename_in_just_one_editor(fname, "image"):
-                a = menu.addAction(_("Image - Rename"))
+                a = menu.addAction("Image - Rename")
                 a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, rename, fn, "image"))
         if gc("image_duplicate__show_in_editor_context_menu"):
-            a = menu.addAction(_("Image - Duplicate"))
+            a = menu.addAction("Image - Duplicate")
             a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _duplicate, fn, "image"))
         if gc("image__show_context_menu_entry_for__showInExplorerFinderFileManager"):
             cmd_filemanager(menu, fname, "Image")
@@ -138,14 +137,14 @@ def add_to_context(view, menu):
                 tooltip('Selected File not in media collection. Aborting ...')
                 return
             if gc("sound__show_context_menu_entry_for__editExternally"):
-                a = menu.addAction(_("Sound (Audio/Video) - edit externally"))
+                a = menu.addAction("Sound (Audio/Video) - edit externally")
                 a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _editExternal, fn, "sound"))
             if gc("sound__show_context_menu_entry_for__rename"):
                 if same_filename_in_just_one_editor(fname, "sound"):
-                    a = menu.addAction(_("Sound (Audio/Video) - rename"))
+                    a = menu.addAction("Sound (Audio/Video) - rename")
                     a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, rename, fn, "sound"))
             if gc("sound__show_context_menu_entry_for__duplicate"):
-                a = menu.addAction(_("Sound (Audio/Video) - duplicate"))
+                a = menu.addAction("Sound (Audio/Video) - duplicate")
                 a.triggered.connect(lambda _, ed=e, fn=fname: helper(ed, _duplicate, fn, "sound"))
             if gc("sound__show_context_menu_entry_for__showInExplorerFinderFileManager"):
                 cmd_filemanager(menu, fname, "Sound (Audio/Video)")
@@ -168,7 +167,7 @@ def _reviewerContextMenu(view, menu):
     fname = url.fileName()
     path = os.path.join(mw.col.media.dir(), fname)
     if url.isValid() and path:
-        a = menu.addAction(_("Image - edit"))
+        a = menu.addAction("Image - edit")
         a.triggered.connect(lambda _, v=view, fn=fname: reviewer_context_edit_img_external(v, fn))
         if gc("image__show_context_menu_entry_for__showInExplorerFinderFileManager"):
             cmd_filemanager(menu, fname, "Image")
