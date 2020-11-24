@@ -45,33 +45,33 @@ def open_in_external(fileabspath, external_program, shell=True):
 def external_progs_and_their_settings(all=True):
     ec = {
         "fp": [gc("image_diagram_mindmap__freeplane_path"),
-            ".mm",
-            gc("image_diagram_mindmap__freeplane_template"),
-            "_fp___",
+               ".mm",
+               gc("image_diagram_mindmap__freeplane_template"),
+               "_fp___",
             ],
         "dia": [gc("image_diagram_mindmap__dia_path"),
-            ".dia",
-            gc("image_diagram_mindmap__dia_template"),
-            "_dia___",
+                ".dia",
+                gc("image_diagram_mindmap__dia_template"),
+                "_dia___",
             ],
         "drawio": [gc("image_diagram_mindmap__drawio_path"),
-            ".drawio",
-            gc("image_diagram_mindmap__drawio_template"),
-            "_drawio___",
+                   ".drawio",
+                   gc("image_diagram_mindmap__drawio_template"),
+                   "_drawio___",
             ],
         "lo": [gc("image_diagram_mindmap__CalcDraw_path"),
-            ".odg",
-            gc("image_diagram_mindmap__CalcDraw_template"),
-            "_LODraw___",
+               ".odg",
+               gc("image_diagram_mindmap__CalcDraw_template"),
+               "_LODraw___",
             ],
     }
     if not all:
         return ec
     else:
         ec["ni"] = [gc("image_edit_externally__program"),
-            ".png",
-            False,
-            ]
+                    ".png",
+                    False,
+                ]
         return ec
 
 
