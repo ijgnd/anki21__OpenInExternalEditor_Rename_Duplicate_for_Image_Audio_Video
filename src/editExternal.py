@@ -154,12 +154,7 @@ def new_name_with_user_query(ec, arg, prefill=""):
     return sourcename, sourcepath, imagename, imagepath
 
 
-def _editDiaMMExternal(editor, field, prog, template, f):
-    pass
-
-
-def editDiaMMExternal(editor, field, prog, template, f):
-    #_editDiaMMExternal(editor, field, prog, template, f)
+def editDiaMMExternal(editor, field, prog, template, sourcepath):
     template_full_path = os.path.join(addon_path, "user_files", template)
     shutil.copy(template_full_path, f.sourcepath)
     copying = True
