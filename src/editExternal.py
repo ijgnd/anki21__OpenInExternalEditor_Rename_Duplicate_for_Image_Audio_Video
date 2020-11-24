@@ -81,10 +81,10 @@ def external_progs_and_their_settings(all=True):
 
 def executable_and_file_for_image(base, ext):
     ec = external_progs_and_their_settings(all=False)
-    for p in ec.values():
-        if p[3] in base:
-            abspath = os.path.join(mediafolder, base + p[1])
-            return p[0], abspath
+    for prog_path, prog_ext, _, prog_fname_identifier in ec.values():
+        if prog_fname_identifier in base:
+            abspath = os.path.join(mediafolder, base + prog_ext)
+            return prog_path, abspath
     else:
         all = external_progs_and_their_settings(True)
         abspath = os.path.join(mediafolder, base + ext)
