@@ -98,6 +98,7 @@ def _editExternal(editor, fname, type, field):
     if type == "image":
         external_program, fileabspath = executable_and_file_for_image(base, ext)
         if gc("image_edit_externally__block_Anki_during_edit") and not isMac:
+            # note: a more recent alternative to check_output is subprocess.run
             subprocess.check_output([external_program, fileabspath])
             editor.saveTags()
             editor.web.page().profile().clearHttpCache()
