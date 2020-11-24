@@ -5,7 +5,7 @@ import os
 import shutil
 
 from aqt.utils import showInfo
-from aqt.qt import *
+from aqt.qt import Qt
 
 from .helper import (
     process_path,
@@ -34,7 +34,7 @@ def new_unused_name_auto_increment(mediafolder, base, ext):
 
 
 def new_duplicate_name(editor, fname, extended):
-    mediafolder, fileabspath, base, ext = process_path(fname)
+    mediafolder, _, base, ext = process_path(fname)
     newfilename = False
     if extended:
         newfilename = get_unused_new_name(mediafolder, base + "_", ext)
@@ -44,7 +44,7 @@ def new_duplicate_name(editor, fname, extended):
 
 
 def _duplicate(editor, fname, type, field):
-    mediafolder, fileabspath, base, ext = process_path(fname)
+    mediafolder, fileabspath, _, _ = process_path(fname)
     if os.path.isfile(fileabspath):
         extended = editor.mw.app.queryKeyboardModifiers() & Qt.ShiftModifier
         newfilename = new_duplicate_name(editor, fname, extended)
