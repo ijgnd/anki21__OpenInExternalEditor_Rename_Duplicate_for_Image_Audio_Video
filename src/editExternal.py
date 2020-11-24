@@ -110,10 +110,7 @@ def _editExternal(editor, fname, type, field):
         else:
             open_in_external(fileabspath, external_program)
     elif type == "sound":
-        if ext.lower()[1:] in gc("sound__extensions_audio"):   # ext has leading "."
-            external_program = gc("sound__external_program_audio")
-        else:
-            external_program = gc("sound__external_program_video")
+        external_program = gc("sound__external_program_video")
         if external_program:
             open_in_external(fileabspath, external_program)
 
