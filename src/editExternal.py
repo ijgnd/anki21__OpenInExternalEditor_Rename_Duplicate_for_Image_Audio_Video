@@ -195,10 +195,8 @@ def new_and_edit(editor, arg):
 
 
 def reviewer_context_edit_img_external(view, fname):
-    token = int(time.time())
-    mediafolder, fileabspath, base, ext = process_path(fname)
+    mediafolder, fileabspath, _, _ = process_path(fname)
     external_program = gc('image_edit_externally__program')
-    # mw.reviewer.web.eval("document.activeElement.blur();")  #?
     if gc("image_edit_externally__block_Anki_during_edit") and not isMac:
         subprocess.check_output([external_program, fname])
         # Reload image by adding a query parameter at the back
@@ -210,7 +208,7 @@ $('img').each(function(){
     src += (src.match(/\?/) ? '&' : '?') + 'token=%d';
     $(this).attr('src', src);
 });
-        """ % token)
+        """ % int(time.time()))
     else:
         open_in_external(fileabspath, external_program)
 
