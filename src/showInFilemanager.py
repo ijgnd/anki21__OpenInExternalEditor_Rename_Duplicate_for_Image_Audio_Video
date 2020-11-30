@@ -19,7 +19,10 @@ from aqt.utils import (
 )
 
 from .config import gc
-from .helper import process_path, osascript_to_args
+from .helper import (
+    osascript_to_args,
+    process_path,
+)
 
 
 def show_in_filemanager(filename):

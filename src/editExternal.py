@@ -21,7 +21,10 @@ from aqt import mw
 from aqt.editor import Editor
 from aqt.utils import getText, showInfo
 
-from .helper import process_path, time_now_fmt
+from .helper import (
+    process_path,
+    time_now_fmt,
+)
 from .duplicate import new_unused_name_auto_increment
 from .config import gc
 
