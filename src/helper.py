@@ -183,3 +183,11 @@ def osascript_to_args(script: str):
 def clip_copy(filename):
     _, fileabspath, _, _ = process_path(filename)
     QApplication.clipboard().setText(fileabspath)
+
+
+def env_adjust():
+    env = os.environ.copy()
+    toremove = ['LD_LIBRARY_PATH', 'QT_PLUGIN_PATH', 'QML2_IMPORT_PATH']
+    for e in toremove:
+        env.pop(e, None)
+    return env

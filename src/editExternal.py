@@ -22,6 +22,7 @@ from aqt.editor import Editor
 from aqt.utils import getText, showInfo
 
 from .helper import (
+    env_adjust,
     process_path,
     time_now_fmt,
 )
@@ -38,15 +39,15 @@ addHook("profileLoaded", some_paths)
 
 
 def open_in_external(fileabspath, external_program, shell=True):
-    with noBundledLibs():
-        if isMac:
-            subprocess.Popen(["open", "-a", external_program, fileabspath])
+    env = env_adjust()
+    if isMac:
+        subprocess.Popen(["open", "-a", external_program, fileabspath], env=env)
+    else:
+        # in 2019-12 I have no idea why I used shell=True by default in 2019-05.
+        if shell:
+            subprocess.Popen(f' "{external_program}" "{fileabspath}" ', shell = True, env=env)
         else:
-            # in 2019-12 I have no idea why I used shell=True by default in 2019-05.
-            if shell:
-                subprocess.Popen(f' "{external_program}" "{fileabspath}" ', shell = True)
-            else:
-                subprocess.Popen([external_program, fileabspath])
+            subprocess.Popen([external_program, fileabspath], env=env)
 
 
 def external_progs_and_their_settings(all=True):

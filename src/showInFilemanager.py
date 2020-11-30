@@ -20,6 +20,7 @@ from aqt.utils import (
 
 from .config import gc
 from .helper import (
+    env_adjust,
     osascript_to_args,
     process_path,
 )
@@ -43,14 +44,12 @@ def show_in_filemanager(filename):
         us = gc("File Manager in Linux and its args")
         if us:
             us.append("file://" + path)
-            with noBundledLibs():
-                subprocess.Popen(us)
+            subprocess.Popen(us, env=env_adjust())
         else:
             select_supported = ["dolphin", "nautilus"]   # caja 1.24 doesn't have "--select"
             for fm in select_supported:
                 if which(fm) is not None:
-                    with noBundledLibs():
-                        subprocess.Popen([fm, "--select", "file://" + path])
+                    subprocess.Popen([fm, "--select", "file://" + path], env=env_adjust())
             else:
                 showInfo( "The file manager will show your media folder. The name of the file you "
                          f"clicked is:\n\n{os.path.dirname(path)}")
