@@ -13,6 +13,13 @@ if anki_point_version >= 45:
 if anki_point_version <= 28:
     from anki.find import findReplace
 
+if anki_point_version <= 49:
+    from anki.utils import isMac
+    from anki.utils import isWin
+else:
+    from anki.utils import is_mac as isMac
+    from anki.utils import is_win as isWin
+
 from aqt import mw
 from aqt.utils import tooltip
 
@@ -133,7 +140,12 @@ def rename(editor, fname, type, field):
             notify_user(cnt, fname, newfilename)
 
             if not os.path.isfile(newfilename):
-                os.rename(fname, newfilename)
+                if isMac:
+                    fname_ = os.path.join(mediafolder, fname)
+                    newfilename_ = os.path.join(mediafolder, newfilename)
+                    os.rename(fname_, newfilename_)
+                else:
+                    os.rename(fname, newfilename)
             backup_changed_filenames(fname, newfilename)
             
             # update editor

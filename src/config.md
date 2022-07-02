@@ -1,4 +1,5 @@
 - In windows in file paths you need to replace `\` with `\\` e.g. `"C:\\Program Files (x86)\\Audacity\\audacity.exe` 
+- In macOS, use absolute paths to external editor applications. For example, if you use Audacity, the path should be `/Applications/Audacity.app`
 
 #### when problems occur
 If you have problems with this add-on: <br/>

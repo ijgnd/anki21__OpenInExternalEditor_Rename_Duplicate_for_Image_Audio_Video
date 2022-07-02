@@ -7,6 +7,7 @@ import shutil
 import json
 import types
 import time
+import shlex
 
 from pathlib import Path
 
@@ -42,7 +43,8 @@ addHook("profileLoaded", some_paths)
 def open_in_external(fileabspath, external_program, shell=True):
     env = env_adjust()
     if isMac:
-        subprocess.Popen(["open", "-a", external_program, fileabspath], env=env)
+        cmd = f"open -a {external_program} '{fileabspath}'"
+        subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     else:
         # in 2019-12 I have no idea why I used shell=True by default in 2019-05.
         if shell:
@@ -123,6 +125,23 @@ def _editExternal(editor, fname, type, field):
         else:
             external_program = gc("sound__external_program_video")
         if external_program:
+            # handle the paths on the macOS side differently
+            if isMac:
+                # if the user has forgotten to add fully-qualified path, 
+                # assume it is in /Applications
+                if not external_program.__contains__('/Applications'):
+                    if not external_program.__contains__('.app'):
+                        ep_ = f'{external_program}.app'
+                        ep_ = f'/Applications/{ep_}'
+                        # does the external program exist in system-wide /Applications
+                        if not os.path.exists(ep_):
+                            # check if it exists in the ~/Applications dir
+                            ep_ = f'~/{ep_}'
+                            if os.path.exists(ep_):
+                                external_program = ep_
+                        else:
+                            # the external program exists in /Applications
+                            external_program = ep_
             open_in_external(fileabspath, external_program)
 
 
