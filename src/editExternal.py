@@ -44,7 +44,7 @@ def open_in_external(fileabspath, external_program, shell=True):
     env = env_adjust()
     if isMac:
         cmd = f"open -a {external_program} '{fileabspath}'"
-        subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env)
     else:
         # in 2019-12 I have no idea why I used shell=True by default in 2019-05.
         if shell:
