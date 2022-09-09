@@ -139,13 +139,10 @@ def rename(editor, fname, type, field):
                 ep.model.endReset()
             notify_user(cnt, fname, newfilename)
 
-            if not os.path.isfile(newfilename):
-                if isMac:
-                    fname_ = os.path.join(mediafolder, fname)
-                    newfilename_ = os.path.join(mediafolder, newfilename)
-                    os.rename(fname_, newfilename_)
-                else:
-                    os.rename(fname, newfilename)
+            old_abs_fname = os.path.join(mediafolder, fname)
+            new_abs_fname = os.path.join(mediafolder, newfilename)
+            if not os.path.isfile(new_abs_fname):
+                os.rename(old_abs_fname, new_abs_fname)
             backup_changed_filenames(fname, newfilename)
             
             # update editor
