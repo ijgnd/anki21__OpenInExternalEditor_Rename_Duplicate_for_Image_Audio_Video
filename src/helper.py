@@ -195,6 +195,16 @@ def env_adjust():
 
 
 def check_if_executable_exists(file):
+    # 2022-09-09 shutil does not provide executable path on macOS
+    # therefore just test for existence and hope for the best
+    if isMac:
+        if not os.path.exists(file):
+            msg = f'{file} does not point to a macOS application. Aborting...'
+            print(msg)
+            tooltip(msg)
+            return
+        else:
+            return file
     called = shutil.which(file)
     if not (called and os.path.isfile(called)):
         msg = f'{file} does not point to a callable file. Aborting ...'
