@@ -16,6 +16,12 @@ from aqt.utils import getText, tooltip, showInfo
 
 from .config import gc
 
+from .config import anki_point_version, gc
+if anki_point_version <= 49:
+    from anki.utils import isMac
+else:
+    from anki.utils import is_mac as isMac
+    
 
 def browser_parents():
     relevant_parents = [Browser]
