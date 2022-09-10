@@ -16,6 +16,12 @@ from aqt.utils import getText, tooltip, showInfo
 
 from .config import gc
 
+from .config import anki_point_version, gc
+if anki_point_version <= 49:
+    from anki.utils import isMac
+else:
+    from anki.utils import is_mac as isMac
+    
 
 def browser_parents():
     relevant_parents = [Browser]
@@ -195,6 +201,16 @@ def env_adjust():
 
 
 def check_if_executable_exists(file):
+    # 2022-09-09 shutil does not provide executable path on macOS
+    # therefore just test for existence and hope for the best
+    if isMac:
+        if not os.path.exists(file):
+            msg = f'{file} does not point to a macOS application. Aborting...'
+            print(msg)
+            tooltip(msg)
+            return
+        else:
+            return file
     called = shutil.which(file)
     if not (called and os.path.isfile(called)):
         msg = f'{file} does not point to a callable file. Aborting ...'
